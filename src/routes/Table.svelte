@@ -72,7 +72,7 @@
 		{#if edit}
 			<li>
 				<button on:click={() => write()}>Paste from clipboard</button>
-				<button on:click={() => copy()}>Copy from clipboard</button>
+				<button on:click={() => copy()}>Copy to clipboard</button>
 			</li>
 
 			{#each Object.keys(operations) as operation}
@@ -91,22 +91,12 @@
 				{#each ["row", "col"] as control}
 					<div style:width="max-content">
 						<label for={control}>{control.toUpperCase()}:</label>
-						<button
-							name={control}
-							on:click={() =>
-								(matrix = matrix.offset_size(
-									control == "row" ? 1 : 0,
-									control == "col" ? 1 : 0
-								))}>+</button
-						>
-						<button
-							name={control}
-							on:click={() =>
-								(matrix = matrix.offset_size(
-									control == "row" ? -1 : 0,
-									control == "col" ? -1 : 0
-								))}>-</button
-						>
+						<input
+							type="number"
+							name="row"
+							bind:value={matrix[control]}
+							style:width={String(matrix[control]).length + 2 + "ch"}
+						/>
 					</div>
 				{/each}
 			</li>
@@ -117,21 +107,21 @@
 </section>
 
 <style lang="scss">
+	input,
+	label {
+		font-family: monospace;
+		font-weight: bold;
+	}
 	table {
 		margin: auto;
 		tr {
+			th {
+				user-select: none;
+			}
 			td {
 				text-align: center;
 				input {
-					font-family: monospace;
-					&[type="number"] {
-						-moz-appearance: textfield;
-					}
-
-					&::-webkit-outer-spin-button,
-					&::-webkit-inner-spin-button {
-						-webkit-appearance: none;
-					}
+					@extend %disable-arrows;
 				}
 			}
 		}

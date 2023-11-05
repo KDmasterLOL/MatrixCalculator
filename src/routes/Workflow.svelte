@@ -16,12 +16,14 @@
 		on:click={() => {
 			matrices.splice(i, 1);
 			matrices = matrices;
-		}}>Remove table</button
+		}}
+		style:color="red">Remove table</button
 	>
 {/each}
 <button
 	on:click={() => {
 		matrices = [...matrices, Matrix.from_matrix(matrices[matrices.length - 1])];
 		matrices = matrices;
-	}}>Create new matrix</button
+	}}
+	style:color="green">Create new table</button
 >

@@ -8,6 +8,14 @@ class Matrix {
 	get col() {
 		return this.array[0].length
 	}
+	set row(val) {
+		if (val == 0) return;
+		this.change_size(val, this.col)
+	}
+	set col(val) {
+		if (val == 0) return;
+		this.change_size(this.row, val)
+	}
 	static from_array(array) {
 		let matrix = new Matrix(array.length, array[0].length)
 		matrix.array = array
@@ -63,6 +71,9 @@ class Matrix {
 			}
 		}
 		return this;
+	}
+	change_size(row = 0, col = 0) {
+		return this.offset_size(row - this.row, col - this.col)
 	}
 
 	to_string() {
