@@ -2,12 +2,8 @@ class Matrix {
   constructor(row = 1, col = 1) {
     this.array = Array.from({ length: row }, e => Array.from({ length: col }, e => 0));
   }
-  get row() {
-    return this.array.length
-  }
-  get col() {
-    return this.array[0].length
-  }
+  get row() { return this.array.length }
+  get col() { return this.array[0].length }
   set row(val) {
     if (val == 0) return;
     this.change_size(val, this.col)
