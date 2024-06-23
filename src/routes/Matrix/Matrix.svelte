@@ -1,11 +1,17 @@
 <script lang="ts">
   import Math from "$lib/components/Math.svelte";
-  import { Matrix } from "$lib/matrix";
+  import { Matrix } from "$lib/matrix.svelte";
   import Fraction from "fraction.js";
   import { resize } from "$lib/actions";
   import type { Operation } from "./operations";
 
-  let { matrix, edit, fraction, selected_operation, onclick } = $props<{
+  let {
+    matrix = $bindable(),
+    edit,
+    fraction,
+    selected_operation,
+    onclick,
+  } = $props<{
     matrix: Matrix;
     edit: boolean;
     fraction: boolean;
@@ -49,7 +55,7 @@
             {#if edit}
               <input
                 type="number"
-                class="text-lg font-mono disable-arrows px-2
+                class="border-none text-lg font-mono disable-arrows px-2
                       {is_highlighted(r, c) ? 'bg-yellow-400' : ''}"
                 bind:value={matrix.array[r][c]}
                 use:resize={0}

@@ -22,23 +22,29 @@
     round: (digits: number) => void;
     change_size: (offset: [number, number]) => void;
   } = $props();
-  let round_digits = 1;
+
+  let round_digits = $state(1);
 </script>
 
 <menu
   class="m-auto max-w-[1000px] grid-flow-row-dense w-fit grid grid-cols-[repeat(auto-fit,minmax(50px,175px))] gap-2 list-none justify-center"
 >
   <li class="row-span-2">
-    <button onclick={() => (edit = !edit)}>View/Edit</button>
+    <button class="btn" onclick={() => (edit = !edit)}>View/Edit</button>
   </li>
   {#if edit}
     <li class="row-span-2 grid grid-rows-subgrid">
-      <button onclick={paste}>Paste from clipboard</button>
-      <button onclick={copy}>Copy to clipboard</button>
+      <button class="btn" onclick={paste}>Paste from clipboard</button>
+      <button class="btn" onclick={copy}>Copy to clipboard</button>
     </li>
     <li class="col-span-2 row-span-2 gap-2 grid grid-cols-subgrid">
       {#each operations as operation}
-        <button onclick={() => (selected_operation = operation)}>
+        <button
+          onclick={() => (selected_operation = operation)}
+          class="btn {selected_operation == operation
+            ? 'ring ring-indigo-250'
+            : ''}"
+        >
           Operation: {operation}</button
         >
       {/each}
@@ -62,7 +68,9 @@
       />
     </li>
     <li>
-      <button class="inline" onclick={() => round(round_digits)}>Round</button>
+      <button class="btn inline" onclick={() => round(round_digits)}
+        >Round</button
+      >
       to
       <input
         type="number"
@@ -74,7 +82,7 @@
       /> decimals
     </li>
   {:else}
-    <button onclick={() => (fraction = !fraction)}>Fraction</button>
+    <button class="btn" onclick={() => (fraction = !fraction)}>Fraction</button>
   {/if}
 </menu>
 
@@ -83,8 +91,5 @@
     button:not(.inline) {
       @apply w-full h-full;
     }
-  }
-  button {
-    @apply bg-blue-100 rounded-md p-2;
   }
 </style>

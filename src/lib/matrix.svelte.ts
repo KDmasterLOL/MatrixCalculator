@@ -1,6 +1,7 @@
 class Matrix {
+  array: number[][] = $state([[]])
   constructor(row = 1, col = 1) {
-    this.array = Array.from({ length: row }, e => Array.from({ length: col }, e => 0));
+    this.array = Array.from({ length: row }, _ => Array.from({ length: col }, _ => 0))
   }
   get row() { return this.array.length }
   get col() { return this.array[0].length }
@@ -12,21 +13,21 @@ class Matrix {
     if (val == 0) return;
     this.change_size(this.row, val)
   }
-  static from_array(array) {
+  static from_array(array: number[][]) {
     let matrix = new Matrix(array.length, array[0].length)
     matrix.array = array
     return matrix
   }
-  static from_string(string) {
+  static from_string(string: string) {
     const array = string.split("\n")
       .map((x) => x.split(",").map((x) => parseFloat(x)))
     return this.from_array(array)
   }
-  static from_matrix(matrix) {
+  static from_matrix(matrix: Matrix) {
     const array = Array.from(matrix.array.map(x => [...x]))
     return this.from_array(array)
   }
-  divide(row, col, row_or_col = true) {
+  divide(row: number, col: number, row_or_col = true) {
     const anchor = this.array[row][col];
     if (row_or_col) {
       for (let c = 0; c < this.col; c++) {
@@ -39,7 +40,7 @@ class Matrix {
     }
     return this
   }
-  to_basis(row, col) {
+  to_basis(row: number, col: number) {
     this.divide(row, col, true)
     for (let r = 0; r < this.array.length; r++) {
       if (r == row) continue;
@@ -74,6 +75,11 @@ class Matrix {
 
   to_string() {
     return (this.array.map(x => x.join(','))).join('\n')
+  }
+  toJSON() {
+    return {
+      array: this.array,
+    }
   }
 }
 export { Matrix };

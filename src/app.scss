@@ -13,6 +13,14 @@
   }
 }
 
+body {
+  @apply overflow-hidden;
+}
+
 input {
   @apply border bg-transparent box-content rounded-md;
+}
+
+body {
+  @apply h-[100vh] grid grid-rows-12 overflow-hidden;
 }

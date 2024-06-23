@@ -1,19 +1,17 @@
 <script lang="ts">
-  import { Matrix } from "$lib/matrix";
-  import MathC from "$lib/components/Math.svelte";
+  import { Matrix } from "$lib/matrix.svelte";
   import MatrixComponent from "./Matrix.svelte";
-  import { resize } from "$lib/actions";
-  import Fraction from "fraction.js";
   import { onMount } from "svelte";
   import Panel from "./Panel.svelte";
   import { round } from "$lib/helpers";
+  import { paste, copy } from "$lib/helpers";
+  import { type Operation, operations } from "./operations";
 
-  export let edit = false;
-  export let matrix: Matrix = new Matrix();
-  export let fraction = true;
-
-  const operations = ["To basis", "Divide row", "Divide col"] as const;
-  type Operation = (typeof operations)[number];
+  let {
+    edit = false,
+    matrix = $bindable(),
+    fraction = false,
+  } = $props<{ edit: boolean; matrix: Matrix; fraction: boolean }>();
 
   const operations_callbacks: {
     [key in Operation]: (row: number, col: number) => void;
@@ -22,32 +20,23 @@
     "Divide row": (row, col) => (matrix = matrix.divide(row, col, true)),
     "Divide col": (row, col) => (matrix = matrix.divide(row, col, false)),
   };
-  let selected_operation: keyof typeof operations_callbacks | null = null;
-  let current_hover: null | [number, number] = null;
+  let selected_operation: keyof typeof operations_callbacks | null =
+    $state(null);
   const round_matrix = (digits: number) => {
     for (let i = 0; i < matrix.row; i++)
       for (let j = 0; j < matrix.col; j++)
         matrix.array[i][j] = round(matrix.array[i][j], digits);
   };
 
-  const change_size = (offset: [number, number]) => {
-    console.log(offset);
-    matrix = matrix.change_size(offset[0], offset[1]);
+  const change_size = (new_size: [number, number]) => {
+    matrix.change_size(new_size[0], new_size[1]);
   };
 
-  function paste() {
-    navigator.clipboard
-      .readText()
-      .then((clipText) => (matrix = Matrix.from_string(clipText)));
-  }
-  function copy() {
-    // @ts-ignore
-    navigator.permissions.query({ name: "clipboard-write" }).then((result) => {
-      if (result.state === "granted" || result.state === "prompt") {
-        navigator.clipboard.writeText(matrix.to_string());
-      }
-    });
-  }
+  const paste_matrix = () =>
+    paste(
+      (clipText: string) => (matrix.array = Matrix.from_string(clipText).array),
+    );
+  const copy_matrix = () => copy(matrix.to_string());
   onMount(() => {
     document.onkeydown = (e) => {
       if (e.key == "Escape") selected_operation = null;
@@ -59,27 +48,16 @@
       selected_operation = null;
     }
   }
-
-  const is_highlighted = (row: number, col: number): boolean => {
-    if (current_hover == null) return false;
-    switch (selected_operation) {
-      case "To basis":
-        return current_hover[0] == row && current_hover[1] == col;
-      case "Divide row":
-        return current_hover[0] == row;
-      case "Divide col":
-        return current_hover[1] == col;
-    }
-    return false;
-  };
 </script>
 
-<section class="m-auto bg-gray-50 p-2 rounded-xl border-black border">
+<section
+  class="m-auto bg-base-300 p-2 rounded-xl border-accent border shadow-md shadow-accent"
+>
   <div class="h-[50vh] flex items-center justify-center mb-8">
     <div class="overflow-scroll max-h-full max-w-full">
       {#key selected_operation}
         <MatrixComponent
-          {matrix}
+          bind:matrix
           {edit}
           {fraction}
           {selected_operation}
@@ -93,8 +71,8 @@
     bind:fraction
     bind:matrix
     bind:selected_operation
-    {paste}
-    {copy}
+    paste={paste_matrix}
+    copy={copy_matrix}
     round={round_matrix}
     {change_size}
   ></Panel>
