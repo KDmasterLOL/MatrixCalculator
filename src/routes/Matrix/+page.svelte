@@ -4,6 +4,7 @@
   import { slide, fade } from "svelte/transition";
   import { cubicIn } from "svelte/easing";
   import { onMount } from "svelte";
+    import { beforeNavigate } from "$app/navigation";
 
   let matrices = $state<Matrix[]>([]);
   onMount(()=>{
@@ -11,7 +12,9 @@
     if(l)
       matrices = (JSON.parse(l) as Matrix[])
       .map(matrix=>Matrix.from_matrix(matrix))
-    window.addEventListener("beforeunload", () => {localStorage.setItem('matrices', JSON.stringify(matrices))})
+    const save_matrices = () => {localStorage.setItem('matrices', JSON.stringify(matrices))}
+    window.addEventListener("beforeunload", save_matrices)
+    beforeNavigate(save_matrices)
   })
 
   const create_matrix = () => {
