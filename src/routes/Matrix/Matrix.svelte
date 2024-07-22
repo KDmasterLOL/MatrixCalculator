@@ -2,8 +2,8 @@
   import Math from "$lib/components/Math.svelte";
   import { Matrix } from "$lib/matrix.svelte";
   import Fraction from "fraction.js";
-  import { resize } from "$lib/actions";
-  import type { Operation } from "./operations";
+  import type { tOperation } from "./operations";
+  import InputMath from "$lib/components/InputMath.svelte";
 
   let {
     matrix = $bindable(),
@@ -15,19 +15,19 @@
     matrix: Matrix;
     edit: boolean;
     fraction: boolean;
-    selected_operation: Operation | null;
-    onclick: (r: number, c: number) => void;
+    selected_operation: tOperation | null;
+    onclick: (row: number, col: number) => void;
   }>();
 
   let current_hover: null | [number, number] = $state(null);
   const is_highlighted = (row: number, col: number): boolean => {
-    if (current_hover == null) return false;
-    switch (selected_operation) {
-      case "To basis":
+    if (current_hover == null || selected_operation === null) return false;
+    switch (selected_operation.name) {
+      case "to basis":
         return current_hover[0] == row && current_hover[1] == col;
-      case "Divide row":
+      case "divide row":
         return current_hover[0] == row;
-      case "Divide col":
+      case "divide col":
         return current_hover[1] == col;
     }
     return false;
@@ -53,16 +53,16 @@
         {#each row as value, c (c)}
           <td class="p-1.5 text-center border-[2px]">
             {#if edit}
-              <input
-                type="number"
-                class="border-none text-lg font-mono disable-arrows px-2
-                      {is_highlighted(r, c) ? 'bg-yellow-400' : ''}"
+              <InputMath
                 bind:value={matrix.array[r][c]}
-                use:resize={0}
+                class="border-none text-lg font-mono disable-arrows px-2
+                                      {is_highlighted(r, c)
+                  ? 'bg-accent text-accent-content'
+                  : ''}"
                 onmouseenter={() => (current_hover = [r, c])}
                 onmouseleave={() => (current_hover = null)}
                 onclick={() => onclick(r, c)}
-              />
+              ></InputMath>
             {:else if fraction}
               {new Fraction(value).toFraction()}
             {:else}

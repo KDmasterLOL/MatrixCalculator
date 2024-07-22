@@ -2,25 +2,42 @@
 @tailwind components;
 @tailwind utilities;
 
-.disable-arrows {
-  &[type="number"] {
-    -moz-appearance: textfield;
+@layer utilities {
+  .disable-arrows {
+    &[type="number"] {
+      -moz-appearance: textfield;
+    }
+
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+    }
   }
 
-  &::-webkit-outer-spin-button,
-  &::-webkit-inner-spin-button {
-    -webkit-appearance: none;
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Hide scrollbar for IE, Edge and Firefox */
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
   }
 }
 
-body {
-  @apply overflow-hidden;
-}
+@layer base {
+  input {
+    @apply border bg-transparent box-content rounded-md;
+  }
 
-input {
-  @apply border bg-transparent box-content rounded-md;
-}
+  html {
+    font-size: clamp(16px, 2vw, 20px);
+  }
 
-body {
-  @apply h-[100vh] grid grid-rows-12 overflow-hidden;
+  body {
+    @apply overflow-hidden h-[100vh] grid grid-rows-12 overflow-hidden;
+  }
 }

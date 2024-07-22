@@ -1,21 +1,24 @@
 <script lang="ts">
-  import type { Matrix } from "$lib/matrix";
+  import type { Matrix } from "$lib/matrix.svelte";
   import { resize } from "$lib/actions";
-  import { operations } from "./operations";
-  import { clamp } from "$lib/helpers";
+  import { t_operations, type tOperation } from "./operations";
+  import { clamp } from "$lib/actions";
   let {
     edit = $bindable(false),
     fraction = $bindable(false),
+    options = $bindable({}),
     selected_operation = $bindable(null),
+    operation_history = $bindable(),
     matrix = $bindable(),
     copy,
     paste,
     round,
-    change_size,
   }: {
     edit: boolean;
     fraction: boolean;
-    selected_operation: string | null;
+    options: { [key: string]: any };
+    selected_operation: tOperation | null;
+    operation_history: number;
     matrix: Matrix;
     copy: () => void;
     paste: () => void;
@@ -24,6 +27,12 @@
   } = $props();
 
   let round_digits = $state(1);
+  const change_row_size = (ev: Event) =>
+    (matrix.row = parseFloat((ev.target as HTMLInputElement).value));
+  const change_col_size = (ev: Event) =>
+    (matrix.col = parseFloat((ev.target as HTMLInputElement).value));
+
+  let buff_selected_operation: tOperation = $state(t_operations[1]);
 </script>
 
 <menu
@@ -37,25 +46,13 @@
       <button class="btn" onclick={paste}>Paste from clipboard</button>
       <button class="btn" onclick={copy}>Copy to clipboard</button>
     </li>
-    <li class="col-span-2 row-span-2 gap-2 grid grid-cols-subgrid">
-      {#each operations as operation}
-        <button
-          onclick={() => (selected_operation = operation)}
-          class="btn {selected_operation == operation
-            ? 'ring ring-indigo-250'
-            : ''}"
-        >
-          Operation: {operation}</button
-        >
-      {/each}
-    </li>
     <li class="flex justify-center items-center">
       <input
         type="number"
         name="row"
         value={matrix.row}
         dir="rtl"
-        onchange={(ev) => change_size([ev.target.value, matrix.col])}
+        onchange={change_row_size}
         use:resize={1.5}
       />
       <span class="mx-2">X</span>
@@ -63,14 +60,42 @@
         type="number"
         name="col"
         value={matrix.col}
-        onchange={(ev) => change_size([matrix.row, ev.target.value])}
+        onchange={change_col_size}
         use:resize={1.5}
       />
     </li>
-    <li>
-      <button class="btn inline" onclick={() => round(round_digits)}
-        >Round</button
+    <li class="col-span-2">
+      <button
+        class="btn btn-sm inline"
+        onclick={() => (selected_operation = buff_selected_operation)}
+        >Do</button
       >
+      <select name="operation" bind:value={buff_selected_operation}>
+        {#each t_operations as operation}
+          <option value={operation}>{operation.name}</option>
+        {/each}
+      </select>
+      {#if ["divide row", "divide col"].includes(buff_selected_operation.name)}
+        by value
+        <input
+          type="number"
+          use:resize={0}
+          bind:value={options.value}
+          placeholder="Value of selected cell"
+          class="w-56 px-2 font-mono disable-arrows invalid:bg-error invalid:text-error-content"
+        />
+      {/if}
+    </li>
+    <li class="text-center">
+      <button
+        class="btn inline btn-sm"
+        onclick={() => {
+          operation_history += 1;
+          round(round_digits);
+        }}
+      >
+        Round
+      </button>
       to
       <input
         type="number"
@@ -78,8 +103,8 @@
         min="1"
         max="6"
         use:resize={2}
-        onchange={(e) => (e.target.value = clamp(e.target.value, 1, 6))}
-      /> decimals
+        use:clamp={[1, 6]}
+      /> <strong>decimals</strong>
     </li>
   {:else}
     <button class="btn" onclick={() => (fraction = !fraction)}>Fraction</button>
@@ -87,6 +112,15 @@
 </menu>
 
 <style lang="scss">
+  input {
+    @apply border-base-100;
+    &:dir(rtl) {
+      @apply pr-2;
+    }
+    &:not(:dir(rtl)) {
+      @apply pl-2;
+    }
+  }
   menu {
     button:not(.inline) {
       @apply w-full h-full;

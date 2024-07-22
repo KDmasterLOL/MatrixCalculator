@@ -1,15 +1,18 @@
-<script>
+<script lang="ts">
   import { afterNavigate } from "$app/navigation";
   import { page } from "$app/stores";
-  import { onMount } from "svelte";
+  import { onMount, type Snippet } from "svelte";
 
-  export let href;
-  let is_active = false;
+  let {href, children} = $props<{href:string, children: Snippet}>();
+  let is_active = $state(false);
 
   const check = () => (is_active = $page.url.pathname === href);
 
   onMount(check);
   afterNavigate(check);
+  
 </script>
 
-<a {href} class={is_active ? "font-bold" : ""}><slot /></a>
+<a {href} class="transition-[font-weight,letter-spacing] {is_active ? 'font-bold tracking-widest' : ''}"
+  >{@render children()}</a
+>

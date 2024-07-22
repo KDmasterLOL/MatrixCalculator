@@ -1,3 +1,5 @@
+import { round } from "./helpers";
+
 class Matrix {
   array: number[][] = $state([[]])
   constructor(row = 1, col = 1) {
@@ -27,21 +29,22 @@ class Matrix {
     const array = Array.from(matrix.array.map(x => [...x]))
     return this.from_array(array)
   }
-  divide(row: number, col: number, row_or_col = true) {
-    const anchor = this.array[row][col];
-    if (row_or_col) {
-      for (let c = 0; c < this.col; c++) {
-        this.array[row][c] /= anchor;
-      }
-    } else {
-      for (let r = 0; r < this.row; r++) {
-        this.array[r][col] /= anchor;
-      }
-    }
-    return this
-  }
+  // divide(row: number, col: number, row_or_col = true) {
+  //   const anchor = this.array[row][col];
+  //   if (row_or_col) {
+  //     for (let c = 0; c < this.col; c++) {
+  //       this.array[row][c] /= anchor;
+  //     }
+  //   } else {
+  //     for (let r = 0; r < this.row; r++) {
+  //       this.array[r][col] /= anchor;
+  //     }
+  //   }
+  //   return this
+  // }
   to_basis(row: number, col: number) {
-    this.divide(row, col, true)
+    let v = this.array[row][col]
+    for (let c = 0; c < this.col; c++) this.array[row][c] /= v
     for (let r = 0; r < this.array.length; r++) {
       if (r == row) continue;
       let multiplier = this.array[r][col];
@@ -71,6 +74,12 @@ class Matrix {
   }
   change_size(row = 0, col = 0) {
     return this.offset_size(row - this.row, col - this.col)
+  }
+  round(digits: number) {
+    for (let i = 0; i < this.row; i++)
+      for (let j = 0; j < this.col; j++)
+        this.array[i][j] = round(this.array[i][j], digits);
+
   }
 
   to_string() {
