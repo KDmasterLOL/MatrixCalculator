@@ -39,7 +39,7 @@
 
 <svelte:window {onkeydown} />
 <section
-  class="m-auto bg-base-300 p-2 rounded-xl shadow-[10px_10px_20px_oklch(var(--n)/0.5),_-10px_-10px_20px_oklch(var(--n)/0.2)]"
+  class="m-auto bg-base-100 p-2 rounded-xl shadow-[10px_10px_20px_oklch(var(--n)/0.5),_-10px_-10px_20px_oklch(var(--n)/0.2)]"
 >
   {#key edit}
     <div

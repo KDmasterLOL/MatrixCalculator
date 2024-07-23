@@ -12,7 +12,10 @@ export const resize = (node: HTMLInputElement, offset: number = 1) => {
 export const clamp = (node: HTMLInputElement, [min, max]: number[]) => {
   const res = () => (node.value = _clamp(parseFloat(node.value), min, max).toString())
   node.addEventListener("input", res)
-  node.addEventListener("change", res)
+  node.addEventListener("change", () => {
+    if (!node.value) node.value = min.toString()
+    res()
+  })
   res()
 }
 

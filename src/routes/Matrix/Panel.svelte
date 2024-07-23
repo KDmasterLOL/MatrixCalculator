@@ -1,7 +1,12 @@
 <script lang="ts">
   import type { Matrix } from "$lib/matrix.svelte";
   import { resize } from "$lib/actions";
-  import { operations, type Operation } from "./operations";
+  import {
+    direction_operation,
+    operations,
+    type direction_operation_options,
+    type Operation,
+  } from "./operations";
   import { clamp } from "$lib/actions";
   let {
     edit = $bindable(false),
@@ -26,6 +31,16 @@
     change_size: (offset: [number, number]) => void;
   } = $props();
 
+  let options_on_row_col_operation: direction_operation_options = $state({
+    direction: "row",
+    index: 1,
+    operation: "+",
+    value: 1,
+  });
+  let on_direction_operation = () => {
+    direction_operation(matrix, options_on_row_col_operation);
+    operation_history += 1;
+  };
   let round_digits = $state(1);
   const change_row_size = (ev: Event) =>
     (matrix.row = parseFloat((ev.target as HTMLInputElement).value));
@@ -64,32 +79,52 @@
         use:resize={1.5}
       />
     </li>
-    <li class="col-span-2 row-span-2 border border-primary">
+    <li class="col-span-2 row-span-2">
       <button
-        class="btn btn-sm inline"
-        onclick={() => (selected_operation = buff_selected_operation)}
-        >Do</button
+        class="btn btn-primary btn-sm inline"
+        onclick={on_direction_operation}>Do</button
       >
-      <!-- <select name="operation" bind:value={buff_selected_operation}> -->
-      <!--   {#each ["+", "-", "*", "/"] as operation} -->
-      <!--     <option value={operation}>{operation}</option> -->
-      <!--   {/each} -->
-      <!-- </select> -->
-      <select name="operation" bind:value={buff_selected_operation}>
-        {#each operations as operation}
-          <option value={operation}>{operation.name}</option>
+      <select
+        name="operation"
+        bind:value={options_on_row_col_operation.operation}
+        class="mx-2 rounded-md"
+      >
+        {#each ["+", "-", "*", "/"] as operation}
+          <option value={operation}>{operation}</option>
         {/each}
       </select>
-      {#if ["divide row", "divide col"].includes(buff_selected_operation.name)}
-        by value
-        <input
-          type="number"
-          use:resize={0}
-          bind:value={options.value}
-          placeholder="Value of selected cell"
-          class="w-56 px-2 font-mono disable-arrows invalid:bg-error invalid:text-error-content"
-        />
-      {/if}
+      on
+      <select
+        name="direction"
+        bind:value={options_on_row_col_operation.direction}
+        class="mx-2 rounded-md"
+      >
+        {#each ["row", "col"] as direction}
+          <option value={direction}>{direction}</option>
+        {/each}
+      </select>
+      with index
+      <input
+        type="number"
+        bind:value={options_on_row_col_operation.index}
+        use:clamp={[
+          1,
+          options_on_row_col_operation.direction == "row"
+            ? matrix.row
+            : matrix.col,
+        ]}
+        use:resize={1.75}
+        class="font-mono w-4"
+      />
+      by value
+      <input
+        type="number"
+        use:resize={0}
+        placeholder="Value"
+        bind:value={options_on_row_col_operation.value}
+        class="w-[5ch] px-2 font-mono disable-arrows"
+        required
+      />
     </li>
     <li class="text-center">
       <button

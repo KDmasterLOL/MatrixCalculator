@@ -16,4 +16,10 @@
     <li>Simple deriative calculator</li>
     <li>Convenient Matrix calculator</li>
   </ul>
+  <hr />
+  <p class="text-lg">
+    Feedback: <a href="mailto:DAlokosCHESTmat@gmail.com"
+      >DAlokosCHESTmat@gmail.com</a
+    >
+  </p>
 </article>

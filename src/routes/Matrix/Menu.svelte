@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { slide } from "svelte/transition";
+
   let { onremove = undefined, oncreate = undefined } = $props<{
     onremove?: () => void;
     oncreate?: () => void;
@@ -14,7 +16,7 @@
     </li>
   {/if}
   {#if oncreate}
-    <li>
+    <li transition:slide={{ axis: "x" }} class="text-nowrap">
       <button class="btn btn-success" onclick={oncreate}
         >Create new table</button
       >
