@@ -1,13 +1,12 @@
 import type { Matrix } from "$lib/matrix.svelte"
 
-export const operations = ["To basis", "Divide row", "Divide col"] as const
-export const operation_names = ["to basis", "divide row", "divide col"] as const
+export const operation_names = ["to basis", "divide row", "divide col", "round"] as const
 export type operation_name = typeof operation_names[number]
-export interface tOperation {
+export interface Operation {
   name: operation_name
   handler: Function
 }
-export const t_operations: tOperation[] = [
+export const operations: Operation[] = [
   {
     name: 'to basis',
     handler:
@@ -31,6 +30,12 @@ export const t_operations: tOperation[] = [
       for (let r = 0; r < matrix.row; r++) matrix.array[r][options.col] /= v
     }
   },
+  {
+    name: 'round',
+    handler: (matrix: Matrix, options: { col: number, row: number, value?: number }) => {
+      const { row, col, value } = options
+      const v = value || matrix.array[row!][col]
+      for (let r = 0; r < matrix.row; r++) matrix.array[r][options.col] /= v
+    }
+  },
 ]
-export type Operation = typeof operations[number]
-

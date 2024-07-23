@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { Matrix } from "$lib/matrix.svelte";
   import { resize } from "$lib/actions";
-  import { t_operations, type tOperation } from "./operations";
+  import { operations, type Operation } from "./operations";
   import { clamp } from "$lib/actions";
   let {
     edit = $bindable(false),
@@ -17,7 +17,7 @@
     edit: boolean;
     fraction: boolean;
     options: { [key: string]: any };
-    selected_operation: tOperation | null;
+    selected_operation: Operation | null;
     operation_history: number;
     matrix: Matrix;
     copy: () => void;
@@ -32,7 +32,7 @@
   const change_col_size = (ev: Event) =>
     (matrix.col = parseFloat((ev.target as HTMLInputElement).value));
 
-  let buff_selected_operation: tOperation = $state(t_operations[1]);
+  let buff_selected_operation: Operation = $state(operations[1]);
 </script>
 
 <menu
@@ -64,14 +64,19 @@
         use:resize={1.5}
       />
     </li>
-    <li class="col-span-2">
+    <li class="col-span-2 row-span-2 border border-primary">
       <button
         class="btn btn-sm inline"
         onclick={() => (selected_operation = buff_selected_operation)}
         >Do</button
       >
+      <!-- <select name="operation" bind:value={buff_selected_operation}> -->
+      <!--   {#each ["+", "-", "*", "/"] as operation} -->
+      <!--     <option value={operation}>{operation}</option> -->
+      <!--   {/each} -->
+      <!-- </select> -->
       <select name="operation" bind:value={buff_selected_operation}>
-        {#each t_operations as operation}
+        {#each operations as operation}
           <option value={operation}>{operation.name}</option>
         {/each}
       </select>

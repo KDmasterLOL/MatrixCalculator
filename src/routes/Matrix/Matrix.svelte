@@ -2,7 +2,7 @@
   import Math from "$lib/components/Math.svelte";
   import { Matrix } from "$lib/matrix.svelte";
   import Fraction from "fraction.js";
-  import type { tOperation } from "./operations";
+  import type { Operation } from "./operations";
   import InputMath from "$lib/components/InputMath.svelte";
 
   let {
@@ -15,7 +15,7 @@
     matrix: Matrix;
     edit: boolean;
     fraction: boolean;
-    selected_operation: tOperation | null;
+    selected_operation: Operation | null;
     onclick: (row: number, col: number) => void;
   }>();
 

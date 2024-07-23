@@ -1,10 +1,9 @@
 <script lang="ts">
   import { Matrix } from "$lib/matrix.svelte";
   import MatrixComponent from "./Matrix.svelte";
-  import { onMount } from "svelte";
   import Panel from "./Panel.svelte";
   import { paste, copy } from "$lib/helpers";
-  import { type Operation, operations, type tOperation } from "./operations";
+  import { type Operation } from "./operations";
 
   let {
     edit = false,
@@ -13,7 +12,7 @@
   } = $props<{ edit: boolean; matrix: Matrix; fraction: boolean }>();
 
   let operation_history = $state(0);
-  let selected_operation: tOperation | null = $state(null);
+  let selected_operation: Operation | null = $state(null);
 
   const change_size = (new_size: [number, number]) => {
     matrix.change_size(new_size[0], new_size[1]);

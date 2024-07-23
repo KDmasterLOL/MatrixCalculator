@@ -13,6 +13,6 @@
   
 </script>
 
-<a {href} class="transition-[font-weight,letter-spacing] {is_active ? 'font-bold tracking-widest' : ''}"
+<a {href} class="transition-[font-weight,letter-spacing] hover:tracking-tighter {is_active ? 'font-bold tracking-widest hover:tracking-widest' : ''}"
   >{@render children()}</a
 >
