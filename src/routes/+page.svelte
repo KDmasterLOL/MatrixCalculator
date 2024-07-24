@@ -2,8 +2,8 @@
 </script>
 
 <article class="prose prose-md p-4 mx-auto">
-  <hgroup class="dark:text-white">
-    <h1 class="text-white">EasyCalc</h1>
+  <hgroup class="text-black dark:text-white">
+    <h1 class="dark:text-white">EasyCalc</h1>
     <p class="text-2xl">
       Edit matrix. Find derivative.<br /><mark class="p-1 rounded-lg"
         >Everything is for your <strong class="text-black">convenience</strong
