@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { Snippet } from "svelte";
   import { fly } from "svelte/transition";
+  import "animate.css"
   import "../app.scss";
   import Header from "./Header.svelte";
 

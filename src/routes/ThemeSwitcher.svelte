@@ -1,6 +1,5 @@
 <script>
   import { theme_store } from "$lib/store/theme";
-  theme_store.init();
 </script>
 
 <label class="text-2xl swap swap-rotate">

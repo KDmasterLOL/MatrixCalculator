@@ -13,7 +13,7 @@ const get_initial_theme = (): theme => {
 }
 
 const createThemeStore = () => {
-  const { subscribe, update, set } = writable<theme>()
+  const { subscribe, update, set } = writable<theme>(browser ? get_initial_theme() : "light")
 
   subscribe((theme: theme) => {
     if (browser && theme) {
@@ -27,7 +27,6 @@ const createThemeStore = () => {
   return {
     subscribe,
     toggle,
-    init: () => onMount(() => set(get_initial_theme()))
   }
 }
 
